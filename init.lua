@@ -4,7 +4,7 @@ local SUPPORTED_KEYS = {
 	"u", "m", "f", "g", "w", "v", "x", "z", "y", "q"
 }
 
-local save_bookmark = ya.sync(function()
+local save_bookmark = ya.sync(function(state)
 	local folder = Folder:by_kind(Folder.CURRENT)
 	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
 	local find = false
@@ -38,31 +38,31 @@ local save_bookmark = ya.sync(function()
 
 end)
 
-local all_bookmarks = ya.sync(function() return state.bookmarks or {} end)
+local all_bookmarks = ya.sync(function(state) return state.bookmarks or {} end)
 
-local delete_bookmark = ya.sync(function(idx) table.remove(state.bookmarks, idx) end)
+local delete_bookmark = ya.sync(function(state,idx) table.remove(state.bookmarks, idx) end)
 
-local delete_all_bookmarks = ya.sync(function() state.bookmarks = nil end)
+local delete_all_bookmarks = ya.sync(function(state) state.bookmarks = nil end)
 
 return {
-	entry = function(_, args)
+	entry = function(state, args)
 		local action = args[1]
 		if not action then
 			return
 		end
 
 		if action == "save" then
-			save_bookmark()
+			save_bookmark(state)
 			return
 		end
 
 		if action == "delete_all" then
-			return delete_all_bookmarks()
+			return delete_all_bookmarks(state)
 		end
 
 
 		if action == "jump" then
-			local bookmarks = all_bookmarks()
+			local bookmarks = all_bookmarks(state)
 			
 			if #bookmarks == 0 then
 				return
@@ -80,7 +80,7 @@ return {
 			ya.manager_emit("arrow", { bookmarks[selected].cursor })
 			return
 		elseif action == "delete" then
-			local bookmarks = all_bookmarks()
+			local bookmarks = all_bookmarks(state)
 
 			if #bookmarks == 0 then
 				return
@@ -92,7 +92,7 @@ return {
 				ya.manager_emit("plugin", { "bookmarks", sync = false, args = "delete" })
 			end
 
-			delete_bookmark(selected)
+			delete_bookmark(state,selected)
 			return
 		end
 	end,
