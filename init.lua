@@ -45,24 +45,24 @@ local delete_bookmark = ya.sync(function(state,idx) table.remove(state.bookmarks
 local delete_all_bookmarks = ya.sync(function(state) state.bookmarks = nil end)
 
 return {
-	entry = function(state, args)
+	entry = function(_,args)
 		local action = args[1]
 		if not action then
 			return
 		end
 
 		if action == "save" then
-			save_bookmark(state)
+			save_bookmark()
 			return
 		end
 
 		if action == "delete_all" then
-			return delete_all_bookmarks(state)
+			return delete_all_bookmarks()
 		end
 
 
 		if action == "jump" then
-			local bookmarks = all_bookmarks(state)
+			local bookmarks = all_bookmarks()
 			
 			if #bookmarks == 0 then
 				return
@@ -80,7 +80,7 @@ return {
 			ya.manager_emit("arrow", { bookmarks[selected].cursor })
 			return
 		elseif action == "delete" then
-			local bookmarks = all_bookmarks(state)
+			local bookmarks = all_bookmarks()
 
 			if #bookmarks == 0 then
 				return
@@ -92,7 +92,7 @@ return {
 				ya.manager_emit("plugin", { "bookmarks", sync = false, args = "delete" })
 			end
 
-			delete_bookmark(state,selected)
+			delete_bookmark(selected)
 			return
 		end
 	end,
