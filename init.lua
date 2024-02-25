@@ -13,6 +13,14 @@ local save_bookmark = ya.sync(function(state)
 		state.bookmarks = {}
 	end
 
+	-- avoid add exists url
+	for y, cand in ipairs(state.bookmarks) do
+		if tostring(under_cursor_file.url) == cand.desc then
+			return 
+		end
+	end
+
+	-- find a key to bind from begin SUPPORTED_KEYS
 	for i, key in ipairs(SUPPORTED_KEYS) do
 		if find then
 			break
