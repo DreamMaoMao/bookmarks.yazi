@@ -4,7 +4,7 @@ local SUPPORTED_KEYS = {
 	"u", "m", "f", "g", "w", "v", "x", "z", "y", "q"
 }
 
-local save_bookmark = ya.sync(function(state)
+local save_bookmark = ya.sync(function(state,message)
 	local folder = Folder:by_kind(Folder.CURRENT)
 	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
 	local find = false
@@ -32,10 +32,15 @@ local save_bookmark = ya.sync(function(state)
 			end
 		end
 
+		-- if input message is empty,set message to file url
+		if message == nil or message == "" then
+			message = under_cursor_file.url
+		end
+
 		state.bookmarks[#state.bookmarks + 1] = {
 			on = key,
 			cwd = tostring(folder.cwd),
-			desc = tostring(under_cursor_file.url),
+			desc = tostring(message),
 			cursor = folder.cursor,
 		}
 
@@ -60,7 +65,12 @@ return {
 		end
 
 		if action == "save" then
-			save_bookmark()
+			local value, event = ya.input({
+				realtime = false,
+				title = "set path message:",
+				position = { "top-center", y = 3, w = 40 },
+			})
+			save_bookmark(value)
 			return
 		end
 
