@@ -67,7 +67,7 @@ return {
 		if action == "save" then
 			local value, event = ya.input({
 				realtime = false,
-				title = "set path message:",
+				title = "set bookmark message:",
 				position = { "top-center", y = 3, w = 40 },
 			})
 			save_bookmark(value)
