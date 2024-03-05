@@ -66,7 +66,7 @@ end)
 local delete_all_bookmarks = ya.sync(function(state)
 	ya.notify {
 		title = "Bookmark",
-		content = "Bookmark:all bookmars has been deleted",
+		content = "Bookmark:all bookmarks has been deleted",
 		timeout = 4,
 		level = "info",
 	}
