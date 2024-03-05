@@ -53,9 +53,25 @@ end)
 
 local all_bookmarks = ya.sync(function(state) return state.bookmarks or {} end)
 
-local delete_bookmark = ya.sync(function(state,idx) table.remove(state.bookmarks, idx) end)
+local delete_bookmark = ya.sync(function(state,idx) 
+	ya.notify {
+		title = "Bookmark",
+		content = "Bookmark:<"..state.bookmarks[idx].desc .."> deleted",
+		timeout = 4,
+		level = "info",
+	}
+	table.remove(state.bookmarks, idx) 
+end)
 
-local delete_all_bookmarks = ya.sync(function(state) state.bookmarks = nil end)
+local delete_all_bookmarks = ya.sync(function(state)
+	ya.notify {
+		title = "Bookmark",
+		content = "Bookmark:all bookmars has been deleted",
+		timeout = 4,
+		level = "info",
+	}
+	state.bookmarks = nil 
+end)
 
 return {
 	entry = function(_,args)
@@ -71,6 +87,12 @@ return {
 				position = { "top-center", y = 3, w = 40 },
 			})
 			save_bookmark(value)
+			ya.notify {
+				title = "Bookmark",
+				content = "Bookmark:<"..value.."> saved",
+				timeout = 4,
+				level = "info",
+			}
 			return
 		end
 
@@ -109,7 +131,6 @@ return {
 			if selected == nil then
 				ya.manager_emit("plugin", { "bookmarks", sync = false, args = "delete" })
 			end
-
 			delete_bookmark(selected)
 			return
 		end
