@@ -44,6 +44,13 @@ local save_bookmark = ya.sync(function(state,message)
 			cursor = folder.cursor,
 		}
 
+		ya.notify {
+			title = "Bookmark",
+			content = "Bookmark:<"..message.."> saved",
+			timeout = 4,
+			level = "info",
+		}
+	
 		find = true
 
 		::continue::
@@ -87,12 +94,6 @@ return {
 				position = { "top-center", y = 3, w = 40 },
 			})
 			save_bookmark(value)
-			ya.notify {
-				title = "Bookmark",
-				content = "Bookmark:<"..value.."> saved",
-				timeout = 4,
-				level = "info",
-			}
 			return
 		end
 
