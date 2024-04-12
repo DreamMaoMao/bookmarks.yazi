@@ -5,7 +5,12 @@ A [Yazi](https://github.com/sxyazi/yazi) plugin that adds the basic functionalit
 > [!NOTE]
 > The latest main branch of Yazi is required at the moment.
 
-https://github.com/dedukun/bookmarks.yazi/assets/25795432/9a9fe345-dd06-442e-99f1-8475ab22fad5
+
+
+https://github.com/DreamMaoMao/bookmarks.yazi/assets/30348075/cb47efd0-7567-456c-8224-c7ae41130b34
+
+
+
 
 ## Installation
 
@@ -23,22 +28,22 @@ Add this to your `keymap.toml`:
 
 ```toml
 [[manager.prepend_keymap]]
-on = [ "m" ]
+on = [ "u", "a" ]
 exec = "plugin bookmarks --args=save"
 desc = "Save current position as a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "'" ]
+on = [ "u", "g" ]
 exec = "plugin bookmarks --args=jump"
 desc = "Jump to a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "b", "d" ]
+on = [ "u", "d" ]
 exec = "plugin bookmarks --args=delete"
 desc = "Delete a bookmark"
 
 [[manager.prepend_keymap]]
-on = [ "b", "D" ]
+on = [ "u", "D" ]
 exec = "plugin bookmarks --args=delete_all"
 desc = "Delete all bookmarks"
 ```
