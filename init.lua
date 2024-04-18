@@ -4,6 +4,78 @@ local SUPPORTED_KEYS = {
 	"u", "m", "f", "g", "w", "v", "x", "z", "y", "q"
 }
 
+local SERIALIZE_PATH = os.getenv("HOME") .. "/.config/yazi/plugins/bookmarks.yazi/bookmarkcache"
+
+local function string_split(input,delimiter)
+
+	local result = {}
+
+	for match in (input..delimiter):gmatch("(.-)"..delimiter) do
+	        table.insert(result, match)
+	end
+	return result
+end
+
+local function delete_lines_by_content(file_path, pattern)
+    local lines = {}
+    local file = io.open(file_path, "r")
+
+    -- Read all lines and store those that do not match the pattern
+    for line in file:lines() do
+        if not line:find(pattern) then
+            table.insert(lines, line)
+        end
+    end
+    file:close()
+
+    -- Write back the lines that don't match the pattern
+    file = io.open(file_path, "w")
+    for i, line in ipairs(lines) do
+        file:write(line .. "\n")
+    end
+    file:close()
+end
+
+-- save table to file
+local save_to_file = ya.sync(function(state,filename)
+    local file = io.open(filename, "w+")
+	for i, f in ipairs(state.bookmarks) do
+		file:write(string.format("%s###%s###%s###%d",f.on,f.cwd,f.desc,f.cursor), "\n")
+	end
+    file:close()
+end)
+
+-- load from file to state
+local laod_file_to_state = ya.sync(function(state,filename)
+	if state.cache_loaded ~=nil and state.cache_loaded == true then
+		return
+	end
+
+	if state.bookmarks == nil then 
+		state.bookmarks = {}
+	end
+
+    local file = io.open(filename, "r")
+	if file == nil then 
+		return
+	end
+
+	for line in file:lines() do
+		line = line:gsub("[\r\n]", "")
+		local bookmark = string_split(line,"###")
+		state.bookmarks[#state.bookmarks + 1] = {
+			on = bookmark[1],
+			cwd = bookmark[2],
+			desc = bookmark[3],
+			cursor = tonumber(bookmark[4]),
+		}
+	end
+    file:close()
+	state.cache_loaded = true
+end)
+
+
+
 local save_bookmark = ya.sync(function(state,message)
 	local folder = Folder:by_kind(Folder.CURRENT)
 	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
@@ -47,7 +119,7 @@ local save_bookmark = ya.sync(function(state,message)
 		ya.notify {
 			title = "Bookmark",
 			content = "Bookmark:<"..message.."> saved",
-			timeout = 4,
+			timeout = 2,
 			level = "info",
 		}
 	
@@ -56,6 +128,7 @@ local save_bookmark = ya.sync(function(state,message)
 		::continue::
 	end
 
+	save_to_file(SERIALIZE_PATH)
 end)
 
 local all_bookmarks = ya.sync(function(state) return state.bookmarks or {} end)
@@ -64,9 +137,10 @@ local delete_bookmark = ya.sync(function(state,idx)
 	ya.notify {
 		title = "Bookmark",
 		content = "Bookmark:<"..state.bookmarks[idx].desc .."> deleted",
-		timeout = 4,
+		timeout = 2,
 		level = "info",
 	}
+	delete_lines_by_content(SERIALIZE_PATH,string.format("%s###%s###%s###%d",state.bookmarks[idx].on,state.bookmarks[idx].cwd,state.bookmarks[idx].desc,state.bookmarks[idx].cursor))
 	table.remove(state.bookmarks, idx) 
 end)
 
@@ -74,10 +148,11 @@ local delete_all_bookmarks = ya.sync(function(state)
 	ya.notify {
 		title = "Bookmark",
 		content = "Bookmark:all bookmarks has been deleted",
-		timeout = 4,
+		timeout = 2,
 		level = "info",
 	}
-	state.bookmarks = nil 
+	state.bookmarks = nil
+	delete_lines_by_content(SERIALIZE_PATH,".*")
 end)
 
 return {
@@ -86,6 +161,8 @@ return {
 		if not action then
 			return
 		end
+
+		laod_file_to_state(SERIALIZE_PATH)
 
 		if action == "save" then
 			local value, event = ya.input({
