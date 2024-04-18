@@ -40,7 +40,7 @@ end
 local save_to_file = ya.sync(function(state,filename)
     local file = io.open(filename, "w+")
 	for i, f in ipairs(state.bookmarks) do
-		file:write(string.format("%s###%s###%s###%d",f.on,f.cwd,f.desc,f.cursor), "\n")
+		file:write(string.format("%s###%s###%s###%d",f.on,f.file_url,f.desc,f.cursor), "\n")
 	end
     file:close()
 end)
@@ -65,7 +65,7 @@ local laod_file_to_state = ya.sync(function(state,filename)
 		local bookmark = string_split(line,"###")
 		state.bookmarks[#state.bookmarks + 1] = {
 			on = bookmark[1],
-			cwd = bookmark[2],
+			file_url = bookmark[2],
 			desc = bookmark[3],
 			cursor = tonumber(bookmark[4]),
 		}
@@ -111,7 +111,7 @@ local save_bookmark = ya.sync(function(state,message)
 
 		state.bookmarks[#state.bookmarks + 1] = {
 			on = key,
-			cwd = tostring(folder.cwd),
+			file_url = tostring(under_cursor_file.url),
 			desc = tostring(message),
 			cursor = folder.cursor,
 		}
@@ -140,7 +140,7 @@ local delete_bookmark = ya.sync(function(state,idx)
 		timeout = 2,
 		level = "info",
 	}
-	delete_lines_by_content(SERIALIZE_PATH,string.format("%s###%s###%s###%d",state.bookmarks[idx].on,state.bookmarks[idx].cwd,state.bookmarks[idx].desc,state.bookmarks[idx].cursor))
+	delete_lines_by_content(SERIALIZE_PATH,string.format("%s###%s###%s###%d",state.bookmarks[idx].on,state.bookmarks[idx].file_url,state.bookmarks[idx].desc,state.bookmarks[idx].cursor))
 	table.remove(state.bookmarks, idx) 
 end)
 
@@ -193,9 +193,8 @@ return {
 				return
 			end
 
-			ya.manager_emit("cd", { bookmarks[selected].cwd })
-			ya.manager_emit("arrow", { -99999999 })
-			ya.manager_emit("arrow", { bookmarks[selected].cursor })
+			ya.manager_emit(bookmarks[selected].file_url:match("[/\\]$") and "cd" or "reveal", { bookmarks[selected].file_url })
+
 			return
 		elseif action == "delete" then
 			local bookmarks = all_bookmarks()
