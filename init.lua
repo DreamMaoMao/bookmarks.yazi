@@ -79,10 +79,9 @@ end)
 
 
 
-local save_bookmark = ya.sync(function(state,message)
+local save_bookmark = ya.sync(function(state,message,key)
 	local folder = Folder:by_kind(Folder.CURRENT)
 	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
-	local find = false
 
 	if state.bookmarks == nil then 
 		state.bookmarks = {}
@@ -95,41 +94,24 @@ local save_bookmark = ya.sync(function(state,message)
 		end
 	end
 
-	-- find a key to bind from begin SUPPORTED_KEYS
-	for i, key in ipairs(SUPPORTED_KEYS) do
-		if find then
-			break
-		end
-
-		for y, cand in ipairs(state.bookmarks) do
-			if key == cand.on then
-				goto continue
-			end
-		end
-
-		-- if input message is empty,set message to file url
-		if message == nil or message == "" then
-			message = under_cursor_file.url
-		end
-
-		state.bookmarks[#state.bookmarks + 1] = {
-			on = key,
-			file_url = tostring(under_cursor_file.url),
-			desc = tostring(message),
-			cursor = folder.cursor,
-		}
-
-		ya.notify {
-			title = "Bookmark",
-			content = "Bookmark:<"..message.."> saved",
-			timeout = 2,
-			level = "info",
-		}
-	
-		find = true
-
-		::continue::
+	-- if input message is empty,set message to file url
+	if message == "" then
+		message = under_cursor_file.url
 	end
+
+	state.bookmarks[#state.bookmarks + 1] = {
+		on = key,
+		file_url = tostring(under_cursor_file.url),
+		desc = tostring(message),
+		cursor = folder.cursor,
+	}
+
+	ya.notify {
+		title = "Bookmark",
+		content = "Bookmark:<"..message.."> saved",
+		timeout = 2,
+		level = "info",
+	}
 
 	save_to_file(SERIALIZE_PATH)
 end)
@@ -158,6 +140,86 @@ local delete_all_bookmarks = ya.sync(function(state)
 	delete_lines_by_content(SERIALIZE_PATH,".*")
 end)
 
+
+local function keyset_notify(str)
+	ya.notify {
+		title = "keyset",
+		content = str,
+		timeout = 2,
+		level = "info",
+	}	
+end
+
+local auto_generate_key = ya.sync(function(state)
+	-- if input_key is empty,auto find a key to bind from begin SUPPORTED_KEYS
+	local find = false
+	local auto_assign_key
+	for i, key in ipairs(SUPPORTED_KEYS) do
+		if find then
+			break
+		end
+
+		for y, cand in ipairs(state.bookmarks) do
+			if key == cand.on then
+				goto continue				
+			end
+		end
+		
+		auto_assign_key = key
+		find = true
+
+		::continue::
+	end	
+
+	if find then
+		return auto_assign_key
+	else
+		keyset_notify("assign fail,all key has been assign")
+		return nil
+	end
+end)
+
+local assign_key =ya.sync(function(state,input_key)
+
+	if string.len(input_key) > 1 then
+		keyset_notify("assign fail,key too long")
+		return nil 
+	end
+
+	if state.bookmarks == nil then 
+		state.bookmarks = {}
+	end
+
+	for y, cand in ipairs(state.bookmarks) do
+		if input_key == cand.on then
+			keyset_notify("assign fail,key has been used")
+			return nil 				
+		end
+	end		
+	return input_key
+end)
+
+local function get_bind_key()
+	local key_set, event = ya.input({
+		realtime = false,
+		title = "set your bind key(one key):",
+		position = { "top-center", y = 3, w = 40 },
+	})
+	if event == 1 and key_set ~= "" then
+		local key_set = assign_key(key_set)
+		if key_set == nil then
+			return get_bind_key()
+		else
+			return key_set
+		end
+	elseif event == 1 and key_set == "" then
+		local generate_key = auto_generate_key()
+		return generate_key
+	else
+		return nil
+	end
+end
+
 return {
 	entry = function(_,args)
 		local action = args[1]
@@ -174,7 +236,11 @@ return {
 				position = { "top-center", y = 3, w = 40 },
 			})
 			if event == 1 then
-				save_bookmark(value)
+				local key = get_bind_key()
+				if key == nil then
+					return
+				end
+				save_bookmark(value,key)
 			end
 			return
 		end
