@@ -194,7 +194,7 @@ return {
 			local selected = ya.which { cands = bookmarks }
 
 			if selected == nil then
-				ya.manager_emit("plugin", { "bookmarks", sync = false, args = "jump" })
+				ya.manager_emit("plugin", { "bookmarks-persistence", sync = false, args = "jump" })
 				return
 			end
 
@@ -211,7 +211,7 @@ return {
 			local selected = ya.which { cands = bookmarks }
 			
 			if selected == nil then
-				ya.manager_emit("plugin", { "bookmarks", sync = false, args = "delete" })
+				ya.manager_emit("plugin", { "bookmarks-persistence", sync = false, args = "delete" })
 			end
 			delete_bookmark(selected)
 			return
