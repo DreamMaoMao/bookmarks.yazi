@@ -212,6 +212,7 @@ return {
 			
 			if selected == nil then
 				ya.manager_emit("plugin", { "bookmarks-persistence", sync = false, args = "delete" })
+				return
 			end
 			delete_bookmark(selected)
 			return
