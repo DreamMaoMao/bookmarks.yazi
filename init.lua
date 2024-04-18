@@ -43,7 +43,7 @@ end
 local save_to_file = ya.sync(function(state,filename)
     local file = io.open(filename, "w+")
 	for i, f in ipairs(state.bookmarks) do
-		file:write(string.format("%s###%s###%s###%d",f.on,f.file_url,f.desc,f.cursor), "\n")
+		file:write(string.format("%s###%s###%s",f.on,f.file_url,f.desc), "\n")
 	end
     file:close()
 end)
@@ -70,7 +70,6 @@ local laod_file_to_state = ya.sync(function(state,filename)
 			on = bookmark[1],
 			file_url = bookmark[2],
 			desc = bookmark[3],
-			cursor = tonumber(bookmark[4]),
 		}
 	end
     file:close()
@@ -103,7 +102,6 @@ local save_bookmark = ya.sync(function(state,message,key)
 		on = key,
 		file_url = tostring(under_cursor_file.url),
 		desc = tostring(message),
-		cursor = folder.cursor,
 	}
 
 	ya.notify {
@@ -125,7 +123,7 @@ local delete_bookmark = ya.sync(function(state,idx)
 		timeout = 2,
 		level = "info",
 	}
-	delete_lines_by_content(SERIALIZE_PATH,string.format("%s###%s###%s###%d",state.bookmarks[idx].on,state.bookmarks[idx].file_url,state.bookmarks[idx].desc,state.bookmarks[idx].cursor))
+	delete_lines_by_content(SERIALIZE_PATH,string.format("%s###%s###%s",state.bookmarks[idx].on,state.bookmarks[idx].file_url,state.bookmarks[idx].desc))
 	table.remove(state.bookmarks, idx) 
 end)
 
