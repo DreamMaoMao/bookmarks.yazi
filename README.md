@@ -18,7 +18,7 @@ https://github.com/DreamMaoMao/bookmarks.yazi/assets/30348075/cb47efd0-7567-456c
 git clone https://github.com/DreamMaoMao/bookmarks-persistence.yazi.git ~/.config/yazi/plugins/bookmarks-persistence.yazi
 
 # Windows
-git clone https://github.com/DreamMaoMao/bookmarks-persistence.yazi.git %AppData%\yazi\config\plugins\bookmarks-persistence.yazi
+git clone https://github.com/DreamMaoMao/bookmarks-persistence.yazi.git $env:APPDATA\yazi\config\plugins\bookmarks-persistence.yazi
 ```
 
 ## Usage

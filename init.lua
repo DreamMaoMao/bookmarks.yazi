@@ -5,9 +5,9 @@ local SUPPORTED_KEYS = {
 }
 
 local LINUX_BASE_PATH = "/.config/yazi/plugins/bookmarks-persistence.yazi/bookmarkcache"
-local WINDOWS_BASE_PATH = "%AppData%\\yazi\\config\\plugins\\bookmarks-persistence.yazi\\bookmarkcache"
+local WINDOWS_BASE_PATH = "\\yazi\\config\\plugins\\bookmarks-persistence.yazi\\bookmarkcache"
 
-local SERIALIZE_PATH = ya.target_family() == "windows" and WINDOWS_BASE_PATH or os.getenv("HOME") .. LINUX_BASE_PATH
+local SERIALIZE_PATH = ya.target_family() == "windows" and os.getenv("APPDATA") .. WINDOWS_BASE_PATH or os.getenv("HOME") .. LINUX_BASE_PATH
 
 local function string_split(input,delimiter)
 
