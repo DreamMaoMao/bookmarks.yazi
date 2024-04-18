@@ -8,7 +8,7 @@ inspired by [bookmarks](https://github.com/dedukun/bookmarks.yazi)
 > The latest main branch of Yazi is required at the moment.
 
 
-https://github.com/DreamMaoMao/bookmarks.yazi/assets/30348075/cb47efd0-7567-456c-8224-c7ae41130b34
+https://github.com/DreamMaoMao/bookmarks-persistence.yazi/assets/30348075/473ff20c-1d31-4816-84dd-c19912d1d8c9
 
 
 ## Installation
