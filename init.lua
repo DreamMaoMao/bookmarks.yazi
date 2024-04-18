@@ -4,7 +4,7 @@ local SUPPORTED_KEYS = {
 	"u", "m", "f", "g", "w", "v", "x", "z", "y", "q"
 }
 
-local SERIALIZE_PATH = os.getenv("HOME") .. "/.config/yazi/plugins/bookmarks.yazi/bookmarkcache"
+local SERIALIZE_PATH = os.getenv("HOME") .. "/.config/yazi/plugins/bookmarks-persistence.yazi/bookmarkcache"
 
 local function string_split(input,delimiter)
 
