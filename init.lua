@@ -173,7 +173,9 @@ return {
 				title = "set bookmark message:",
 				position = { "top-center", y = 3, w = 40 },
 			})
-			save_bookmark(value)
+			if event == 1 then
+				save_bookmark(value)
+			end
 			return
 		end
 
