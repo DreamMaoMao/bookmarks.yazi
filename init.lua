@@ -125,7 +125,7 @@ local delete_bookmark = ya.sync(function(state,idx)
 		timeout = 2,
 		level = "info",
 	}
-	delete_lines_by_content(SERIALIZE_PATH,string.format("%s###%s###%s",state.bookmarks[idx].on,state.bookmarks[idx].file_url,state.bookmarks[idx].desc,state.bookmarks[idx].isdir))
+	delete_lines_by_content(SERIALIZE_PATH,string.format("%s###",state.bookmarks[idx].on))
 	table.remove(state.bookmarks, idx) 
 end)
 
