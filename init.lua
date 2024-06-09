@@ -49,13 +49,12 @@ local save_to_file = ya.sync(function(state,filename)
 end)
 
 -- load from file to state
-local laod_file_to_state = ya.sync(function(state,filename)
-	if state.cache_loaded ~=nil and state.cache_loaded == true then
-		return
-	end
+local load_file_to_state = ya.sync(function(state,filename)
 
 	if state.bookmarks == nil then 
 		state.bookmarks = {}
+	else
+		return
 	end
 
     local file = io.open(filename, "r")
@@ -66,15 +65,19 @@ local laod_file_to_state = ya.sync(function(state,filename)
 	for line in file:lines() do
 		line = line:gsub("[\r\n]", "")
 		local bookmark = string_split(line,"###")
+		if bookmark == nil or #bookmark < 4 then
+			goto nextline
+		end
 		state.bookmarks[#state.bookmarks + 1] = {
 			on = bookmark[1],
 			file_url = bookmark[2],
 			desc = bookmark[3],
 			isdir = bookmark[4],
 		}
+
+		::nextline::
 	end
     file:close()
-	state.cache_loaded = true
 end)
 
 
@@ -82,10 +85,6 @@ end)
 local save_bookmark = ya.sync(function(state,message,key)
 	local folder = Folder:by_kind(Folder.CURRENT)
 	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
-
-	if state.bookmarks == nil then 
-		state.bookmarks = {}
-	end
 
 	-- avoid add exists url
 	for y, cand in ipairs(state.bookmarks) do
@@ -186,10 +185,6 @@ local assign_key =ya.sync(function(state,input_key)
 		return nil 
 	end
 
-	if state.bookmarks == nil then 
-		state.bookmarks = {}
-	end
-
 	for y, cand in ipairs(state.bookmarks) do
 		if input_key == cand.on then
 			keyset_notify("assign fail,key has been used")
@@ -227,7 +222,7 @@ return {
 			return
 		end
 
-		laod_file_to_state(SERIALIZE_PATH)
+		load_file_to_state(SERIALIZE_PATH)
 
 		if action == "save" then
 			local value, event = ya.input({
