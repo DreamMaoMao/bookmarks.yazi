@@ -32,21 +32,21 @@ Add this to your `keymap.toml`:
 ```toml
 [[manager.prepend_keymap]]
 on = [ "u", "a" ]
-exec = "plugin bookmarks-persistence --args=save"
+run = "plugin bookmarks-persistence --args=save"
 desc = "Save current position as a bookmark"
 
 [[manager.prepend_keymap]]
 on = [ "u", "g" ]
-exec = "plugin bookmarks-persistence --args=jump"
+run = "plugin bookmarks-persistence --args=jump"
 desc = "Jump to a bookmark"
 
 [[manager.prepend_keymap]]
 on = [ "u", "d" ]
-exec = "plugin bookmarks-persistence --args=delete"
+run = "plugin bookmarks-persistence --args=delete"
 desc = "Delete a bookmark"
 
 [[manager.prepend_keymap]]
 on = [ "u", "D" ]
-exec = "plugin bookmarks-persistence --args=delete_all"
+run = "plugin bookmarks-persistence --args=delete_all"
 desc = "Delete all bookmarks"
 ```
