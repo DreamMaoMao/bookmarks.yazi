@@ -4,8 +4,8 @@ local SUPPORTED_KEYS = {
 	"u", "m", "f", "g", "w", "v", "x", "z", "y", "q"
 }
 
-local LINUX_BASE_PATH = "/.config/yazi/plugins/bookmarks-persistence.yazi/bookmarkcache"
-local WINDOWS_BASE_PATH = "\\yazi\\config\\plugins\\bookmarks-persistence.yazi\\bookmarkcache"
+local LINUX_BASE_PATH = "/.config/yazi/plugins/bookmarks.yazi/bookmarkcache"
+local WINDOWS_BASE_PATH = "\\yazi\\config\\plugins\\bookmarks.yazi\\bookmarkcache"
 
 local SERIALIZE_PATH = ya.target_family() == "windows" and os.getenv("APPDATA") .. WINDOWS_BASE_PATH or os.getenv("HOME") .. LINUX_BASE_PATH
 
