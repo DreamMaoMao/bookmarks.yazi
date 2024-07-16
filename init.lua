@@ -83,8 +83,8 @@ end)
 
 
 local save_bookmark = ya.sync(function(state,message,key)
-	local folder = Folder:by_kind(Folder.CURRENT)
-	local under_cursor_file = folder.window[folder.cursor - folder.offset + 1]
+
+	local under_cursor_file = cx.active.current.hovered
 
 	-- avoid add exists url
 	for y, cand in ipairs(state.bookmarks) do
