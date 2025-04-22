@@ -28,27 +28,27 @@ Add this to your `keymap.toml`:
 ```toml
 [[manager.prepend_keymap]]
 on = [ "u", "a" ]
-run = "plugin bookmarks --args='save'"
+run = "plugin bookmarks -- save"
 desc = "Save current position as a bookmark"
 
 [[manager.prepend_keymap]]
 on = [ "u", "g" ]
-run = "plugin bookmarks --args='jump'"
+run = "plugin bookmarks -- jump"
 desc = "Jump to a bookmark"
 
 [[manager.prepend_keymap]]
 on = [ "u", "d" ]
-run = "plugin bookmarks --args='delete'"
+run = "plugin bookmarks -- delete"
 desc = "Delete a bookmark"
 
 [[manager.prepend_keymap]]
 on = [ "u", "D" ]
-run = "plugin bookmarks --args='delete_all'"
+run = "plugin bookmarks -- delete_all"
 desc = "Delete all bookmarks"
 
 [[manager.prepend_keymap]]
 on = [ "u", "m" ]
-run = "plugin bookmarks --args='modify'"
+run = "plugin bookmarks -- modify"
 desc = "modify key bind to hoverd path"
 
 ```
